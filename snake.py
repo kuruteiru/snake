@@ -13,16 +13,24 @@ fps_surface = font.render("0", False, "red")
 
 # snake class
 class Snake:
-    length = 1
-    color = pygame.Color(60, 240, 140)
-    head = (pygame.display.get_window_size()[0] / 2, pygame.display.get_window_size()[1] / 2)
     body = list()
+    direction = tuple()
+    color = pygame.Color(60, 240, 140)
+    def __init__(self, position: tuple, direction: tuple, color: pygame.Color):
+        self.body.append(position)
+        self.direction = direction
+        self.color = color
 
 class Food:
-    position = (0,0)
+    value: 1 
+    position = tuple()
     color = pygame.Color(230, 80, 80)
+    def __init__(self, value: int, position: tuple, color: pygame.Color):
+        self.value = value
+        self.position = position
+        self.color = color
 
-snake = Snake()
+#  snake = Snake()
 
 # game loop
 while is_running:
@@ -33,7 +41,7 @@ while is_running:
         
         # rect = pygame.Rect(snake_p)
 
-        pygame.draw.circle(screen, snake.color, snake.head, 15)
+        pygame.draw.circle()
 
         fps_surface = font.render(str(clock.get_fps()), False, "red")
         screen.blit(fps_surface, (0,0))
