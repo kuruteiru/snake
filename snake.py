@@ -1,72 +1,102 @@
-import pygame, sys
+#region imports
 
-pygame.init()
-pygame.display.set_caption("snake")
-screen = pygame.display.set_mode((1280, 720), pygame.SCALED)
-clock = pygame.time.Clock()
-delta_time = 0
-is_running = True
+import pygame
+from sys import exit
+from random import randint 
 
-# font = pygame.font.Font(None, 50)
-# fps_surface = font.render("0", False, "red")
+#endregion imports
 
-background_color = pygame.Color(60, 240, 140)
-
-default_snake_color = pygame.Color(60, 240, 140)
-default_food_color = pygame.Color(230, 80, 80)
+#region game-objects
 
 class Grid:
     width: int
-    length: int 
+    length: int
+    cell_size: int
     cells: any
+    surface: pygame.Surface
 
-    def __init__(self, width: int, length: int):
+    def __init__(self, width: int, length: int, cell_size: int):
         self.width = width
         self.length = length
-        self.cells = [width][length]
+        self.cell_size = cell_size
+        self.cells = [["" for x in range(width)] for y in range(length)]
 
 class Snake:
     body: list
-    direction: tuple
+    direction: pygame.Vector2
     color: pygame.Color
 
-    def __init__(self, position: tuple, direction: tuple, color: pygame.Color):
-        self.body = {position}
-        self.direction = direction
+    def __init__(self, position: pygame.Vector2, direction: pygame.Vector2, color: pygame.Color):
+        self.body = [position]
+        self.direction = direction.normalize()
         self.color = color
 
-    def move(direction: tuple): pass
-    def grow(value: int): pass
+    def move(self, direction: pygame.Vector2): pass
+    def grow(self, value: int): pass
 
-class Food:
-    position: tuple
-    value: int 
+class SnakeNode(pygame.sprite.Sprite):
+    position: pygame.Vector2
+
+class Food(pygame.sprite.Sprite):
+    value: int
+    position: pygame.Vector2
+    size: pygame.Vector2
     color: pygame.Color
 
-    def __init__(self, position: tuple, value: int, color: pygame.Color):
-        self.position = position
+    def __init__(self, value: int, position: pygame.Vector2, size: pygame.Vector2, color: pygame.Color):
         self.value = value
+        self.position = position
+        self.size = size
         self.color = color
+        super().__init__()
+        self.image = pygame.Surface(size)
+        self.image.fill(color)
+        self.rect = self.image.get_rect(topleft = position)
 
-grid = Grid(30, 30)
-snake = Snake((20,20), (0,1), default_snake_color)
-food = Food((5,5), 1, default_food_color)
+#endregion game-objects
 
-# game loop
+#region global
+
+delta_time = 0
+clock = pygame.time.Clock()
+
+background_color = pygame.Color(60, 240, 140)
+snake_color = pygame.Color(60, 240, 140)
+food_color = pygame.Color(230, 80, 80)
+
+grid = Grid(50,50,10)
+snake = Snake(pygame.Vector2(0,0), pygame.Vector2(0,1), snake_color)
+food = pygame.sprite.GroupSingle(
+    Food(
+        value=1, 
+        position=pygame.Vector2(grid.cell_size * randint(0, grid.width), grid.cell_size * randint(0, grid.length)), 
+        size=pygame.Vector2(grid.cell_size, grid.cell_size), 
+        color=food_color
+    )
+)
+
+pygame.init()
+pygame.display.set_caption("snake")
+screen_size = (grid.width * grid.cell_size, grid.length * grid.cell_size)
+screen = pygame.display.set_mode(screen_size)
+
+#endregion global
+
+#region game-loop
+
 while True:
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
             pygame.quit()
-            sys.exit()
+            exit()
 
         screen.fill(background_color)
         
-        # rect = pygame.Rect(snake_p)
-        # pygame.draw.circle()
-        # fps_surface = font.render(str(clock.get_fps()), False, "red")
-        # screen.blit(fps_surface, (0,0))
+        food.draw(screen) 
 
         pygame.display.update()
 
         # will use for framerate independent movement later
         delta_time = clock.tick() / 1000
+
+#endregion game-loop
