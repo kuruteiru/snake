@@ -1,5 +1,5 @@
-import pygame
 from enum import Enum
+import pygame
 
 class Direction(Enum): 
     UP = pygame.Vector2(0, -1)
@@ -53,11 +53,6 @@ class SnakeNode:
 
     def draw(self, surface): surface.blit(self.image, self.rect)
 
-    def move(self, direction: pygame.Vector2):
-        offset = direction.normalize() * self.size
-        self.position += offset
-        self.rect = pygame.Rect.move(self.rect, offset.x, offset.y)
-
 class Snake:
     length: int
     size: int
@@ -68,18 +63,19 @@ class Snake:
     def __init__(self, length: int, size: int, position: pygame.Vector2, direction: Direction, color: pygame.Color):
         self.length = length
         self.size = size
-        self.body = list()
-        for i in range(length): 
-            self.body.append(SnakeNode(size, position + direction.value * size * i, color))
         self.direction = direction
         self.color = color
+        self.body = list()
+        for i in range(length): 
+            self.body.append(SnakeNode(size, position - direction.value * size * i, color))
 
     def draw(self, surface: pygame.Surface):
-        for node in self.body:
-            surface.blit(node.image, node.rect)
+        for node in self.body: surface.blit(node.image, node.rect)
 
     def grow(self, value: int): 
-        self.body
+        for i in range(value):
+            dir = self.direction.value if self.length < 2 else self.body[-2].position - self.body[-1].position
+            self.body.append(SnakeNode(self.size, self.body[-1].position - dir.normalize() * self.size, self.color))
 
     def move(self):
         self.body.insert(0, SnakeNode(self.size, self.body[0].position + self.direction.value * self.size, self.color))
