@@ -1,3 +1,4 @@
+from random import randint 
 from enum import Enum
 import pygame
 
@@ -35,6 +36,10 @@ class Food:
         self.rect = self.image.get_rect(topleft = position)
 
     def draw(self, surface): surface.blit(self.image, self.rect)
+
+    def change_position(self, grid: Grid):
+        self.position = pygame.Vector2(grid.cell_size * randint(0, grid.width - 1), grid.cell_size * randint(0, grid.length - 1))
+        self.rect.topleft = self.position
 
 class SnakeNode:
     size: int
@@ -74,8 +79,8 @@ class Snake:
 
     def grow(self, value: int): 
         for i in range(value):
-            dir = self.direction.value if self.length < 2 else self.body[-2].position - self.body[-1].position
-            self.body.append(SnakeNode(self.size, self.body[-1].position - dir.normalize() * self.size, self.color))
+            direction = self.direction.value if self.length < 2 else self.body[-2].position - self.body[-1].position
+            self.body.append(SnakeNode(self.size, self.body[-1].position - direction.normalize() * self.size, self.color))
 
     def move(self):
         self.body.insert(0, SnakeNode(self.size, self.body[0].position + self.direction.value * self.size, self.color))
