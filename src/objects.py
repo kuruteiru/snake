@@ -52,7 +52,7 @@ class SnakeNode:
         self.position = position
         self.size = size
         self.color = color
-        self.image = pygame.Surface ((size, size))
+        self.image = pygame.Surface((size, size))
         self.image.fill(color)
         self.rect = self.image.get_rect(topleft = position)
 
@@ -61,17 +61,19 @@ class SnakeNode:
 class Snake:
     length: int
     size: int
+    speed: int
     body: list
     direction: Direction
     color: pygame.Color
 
-    def __init__(self, length: int, size: int, position: pygame.Vector2, direction: Direction, color: pygame.Color):
+    def __init__(self, length: int, size: int, speed: int, position: pygame.Vector2, direction: Direction, color: pygame.Color):
         self.length = length
         self.size = size
+        self.speed = speed
         self.direction = direction
         self.color = color
         self.body = list()
-        for i in range(length): 
+        for i in range(length):
             self.body.append(SnakeNode(size, position - direction.value * size * i, color))
 
     def draw(self, surface: pygame.Surface):

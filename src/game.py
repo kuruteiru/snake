@@ -4,6 +4,7 @@ import objects
 import pygame
 
 class Game:
+    score: int
     grid = objects.Grid
     snake: objects.Snake
     food: objects.Food
@@ -11,10 +12,15 @@ class Game:
     screen = pygame.Surface
     clock = pygame.time.Clock
     update_timer_event: pygame.event.Event
+    font: pygame.font.Font
 
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("snake")
+        background_music = pygame.mixer.Sound('./src/music/snake_jazz.mp3')
+        background_music.set_volume(0.1)
+        background_music.play(loops = -1)
+        self.score = 0
         self.grid = objects.Grid(30, 30, 10)
         self.screen = pygame.display.set_mode((self.grid.width * self.grid.cell_size, self.grid.length * self.grid.cell_size))
         self.clock = pygame.time.Clock()
@@ -28,13 +34,15 @@ class Game:
         self.snake = objects.Snake(
             length = 3,
             size = self.grid.cell_size, 
+            speed = 1,
             position = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2),
             direction = objects.Direction.UP,
             color = pygame.Color(77, 166, 255)
         )
         self.update_timer_event = pygame.event.custom_type()
-        pygame.time.set_timer(self.update_timer_event, 100)
+        pygame.time.set_timer(self.update_timer_event, self.snake.speed * 100)
         pygame.event.set_allowed([pygame.QUIT, pygame.KEYDOWN, self.update_timer_event])
+        self.font = pygame.font.SysFont('Roboto', 36)
 
     def run(self):
         self.check_collisions()
@@ -49,6 +57,7 @@ class Game:
             self.snake.direction = self.input_queue[0]
             self.input_queue.pop(0)
         self.snake.draw(self.screen)
+        self.display_score()
         pygame.display.update()
 
     def check_collisions(self):
@@ -59,10 +68,12 @@ class Game:
         if (self.snake.body[0].position == self.food.position):
             self.food.change_position(self.grid)
             self.snake.grow(self.food.value)
+            self.score += 1
+            pygame.time.set_timer(self.update_timer_event, self.snake.speed * 100 - self.score)
             return
         
         if (0 > self.snake.body[0].position.x or self.snake.body[0].position.x >= self.grid.width * self.grid.cell_size or
-            0 > self.snake.body[0].position.y or self.snake.body[0].position.y >= self.grid.length * self.grid.cell_size):  
+            0 > self.snake.body[0].position.y or self.snake.body[0].position.y >= self.grid.length * self.grid.cell_size):
             self.game_over()
 
     def handle_events(self):
@@ -74,18 +85,23 @@ class Game:
 
     def handle_controls(self, key: int):
         match key:
-            case pygame.K_UP | pygame.K_w: 
+            case pygame.K_UP | pygame.K_w:
                 if (self.snake.direction != objects.Direction.DOWN):
                     self.input_queue.append(objects.Direction.UP)
             case pygame.K_LEFT | pygame.K_a:
                 if (self.snake.direction != objects.Direction.RIGHT):
                     self.input_queue.append(objects.Direction.LEFT)
-            case pygame.K_DOWN | pygame.K_s: 
+            case pygame.K_DOWN | pygame.K_s:
                 if (self.snake.direction != objects.Direction.UP):
                     self.input_queue.append(objects.Direction.DOWN)
-            case pygame.K_RIGHT | pygame.K_d: 
+            case pygame.K_RIGHT | pygame.K_d:
                 if (self.snake.direction != objects.Direction.LEFT):
                     self.input_queue.append(objects.Direction.RIGHT)
+
+    def display_score(self):
+        font_surface = self.font.render(str(self.score), False, pygame.Color(0, 180, 75))
+        font_rect = font_surface.get_rect(topleft = (self.grid.cell_size, self.grid.cell_size))
+        self.screen.blit(font_surface, font_rect)
 
     def game_over(self):
         self.exit_game()
