@@ -11,3 +11,13 @@ Projekt bude mít nastaveno potřebné workflow, které automaticky provede
 1. automaticky vygeneruje dokumentaci.
 
 V posledním výukovém bloku (po psaní zápočtové písemky) proběhne obhajoba závěrečného projektu – cca 5min představení projektu + ukázka GitLab repozitáře.
+
+# Dependencies
+
+```Bash
+python -m pip install pygame
+```
+
+```Powershell
+python -m pip install pygame
+```
