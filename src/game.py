@@ -37,7 +37,7 @@ class Game:
             speed = 1,
             position = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2),
             direction = objects.Direction.UP,
-            color = pygame.Color(77, 166, 255)
+            color = pygame.Color(75, 165, 255)
         )
         self.update_timer_event = pygame.event.custom_type()
         pygame.time.set_timer(self.update_timer_event, self.snake.speed * 100)
