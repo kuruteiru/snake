@@ -17,7 +17,3 @@ V posledním výukovém bloku (po psaní zápočtové písemky) proběhne obhajo
 ```Bash
 python -m pip install pygame
 ```
-
-```Powershell
-python -m pip install pygame
-```
