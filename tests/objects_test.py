@@ -25,7 +25,7 @@ class TestFood(unittest.TestCase):
 
     def test_change_position(self):
         grid = objects.Grid(30, 30, 10)
-        food = objects.Food(1, 20, grid.cell_size * 2, pygame.Color(255, 0, 0))
+        food = objects.Food(1, 20, pygame.Vector2(grid.cell_size * 2, grid.cell_size * 2), pygame.Color(230, 80, 80))
         food.change_position(grid)
         self.assertTrue(0 <= food.position.x < grid.cell_size * grid.width)
         self.assertTrue(0 <= food.position.y < grid.cell_size * grid.length)
@@ -39,12 +39,26 @@ class TestSnakeNode(unittest.TestCase):
 
 class TestSnake(unittest.TestCase):
     def test_initialization(self):
-        snake = objectsSnake(3, 20, 1, pygame.Vector2(100, 100), Direction.RIGHT, pygame.Color(0, 0, 255))
+        snake = objects.Snake(3, 10, 1, pygame.Vector2(100, 100), objects.Direction.UP, pygame.Color(75, 165, 255))
         self.assertEqual(snake.length, 3)
-        self.assertEqual(snake.size, 20)
+        self.assertEqual(snake.size, 10)
         self.assertEqual(snake.speed, 1)
-        self.assertEqual(snake.direction, Direction.RIGHT)
-        self.assertEqual(snake.color, pygame.Color(0, 0, 255))
+        self.assertEqual(snake.direction, objects.Direction.UP)
+        self.assertEqual(snake.color, pygame.Color(75, 165, 255))
         self.assertEqual(len(snake.body), 3)
-    def test_grow(self): pass
-    def test_move(self): pass
+        # add test for individual snake nodes
+
+    def test_grow(self):
+        snake = objects.Snake(3, 10, 1, pygame.Vector2(100, 100), objects.Direction.UP, pygame.Color(75, 165, 255))
+        snake.grow(1)
+        self.assertEqual(len(snake.body), 4)
+        # add test for individual snake nodes
+    
+    def test_move(self):
+        snake = objects.Snake(3, 10, 1, pygame.Vector2(100, 100), objects.Direction.UP, pygame.Color(75, 165, 255))
+        snake.move()
+        self.assertEqual(snake.body[0].position, pygame.Vector2(100, 90))
+        # add test for individual snake nodes
+
+if __name__ == '__main__':
+    unittest.main()
