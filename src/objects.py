@@ -26,7 +26,7 @@ class Food:
     image: pygame.Surface
     rect: pygame.Rect
 
-    def __init__(self, value: int, size: int, position: pygame.Vector3, color: pygame.Color):
+    def __init__(self, value: int, size: int, position: pygame.Vector2, color: pygame.Color):
         self.value = value
         self.size = size
         self.position = position
