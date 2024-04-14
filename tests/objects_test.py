@@ -46,19 +46,32 @@ class TestSnake(unittest.TestCase):
         self.assertEqual(snake.direction, objects.Direction.UP)
         self.assertEqual(snake.color, pygame.Color(75, 165, 255))
         self.assertEqual(len(snake.body), 3)
-        # add test for individual snake nodes
+        for i, node in enumerate(snake.body):
+            self.assertIsInstance(node, objects.SnakeNode)
+            self.assertEqual(node.size, 10)
+            self.assertEqual(node.position, pygame.Vector2(100, 100) - objects.Direction.UP.value * 10 * i)
+            self.assertEqual(node.color, pygame.Color(75, 165, 255))
 
     def test_grow(self):
         snake = objects.Snake(3, 10, 1, pygame.Vector2(100, 100), objects.Direction.UP, pygame.Color(75, 165, 255))
         snake.grow(1)
         self.assertEqual(len(snake.body), 4)
-        # add test for individual snake nodes
+        for i, node in enumerate(snake.body):
+            self.assertIsInstance(node, objects.SnakeNode)
+            self.assertEqual(node.size, 10)
+            self.assertEqual(node.color, pygame.Color(75, 165, 255))
     
     def test_move(self):
         snake = objects.Snake(3, 10, 1, pygame.Vector2(100, 100), objects.Direction.UP, pygame.Color(75, 165, 255))
         snake.move()
         self.assertEqual(snake.body[0].position, pygame.Vector2(100, 90))
-        # add test for individual snake nodes
+        for i, node in enumerate(snake.body):
+            self.assertIsInstance(node, objects.SnakeNode)
+            if i == 0: self.assertEqual(node.position, pygame.Vector2(100, 90))
+            else:
+                expected_position = pygame.Vector2(100, 100) - objects.Direction.UP.value * 10 * (i - 1)
+                self.assertEqual(node.position, expected_position)
+            self.assertEqual(node.size, 10)
+            self.assertEqual(node.color, pygame.Color(75, 165, 255))
 
-if __name__ == '__main__':
-    unittest.main()
+if __name__ == '__main__': unittest.main()
