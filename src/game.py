@@ -17,9 +17,6 @@ class Game:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("snake")
-        background_music = pygame.mixer.Sound('./src/music/snake_jazz.mp3')
-        background_music.set_volume(0.1)
-        background_music.play(loops = -1)
         self.score = 0
         self.grid = objects.Grid(30, 30, 10)
         self.screen = pygame.display.set_mode((self.grid.width * self.grid.cell_size, self.grid.length * self.grid.cell_size))
@@ -63,18 +60,20 @@ class Game:
     def check_collisions(self):
         for i in range(1, len(self.snake.body)):
             if (self.snake.body[0].position == self.snake.body[i].position):
-                self.game_over()
+                # self.game_over()
+                return True
 
         if (self.snake.body[0].position == self.food.position):
             self.food.change_position(self.grid)
             self.snake.grow(self.food.value)
             self.score += 1
             pygame.time.set_timer(self.update_timer_event, self.snake.speed * 100 - self.score)
-            return
+            return True
         
         if (0 > self.snake.body[0].position.x or self.snake.body[0].position.x >= self.grid.width * self.grid.cell_size or
             0 > self.snake.body[0].position.y or self.snake.body[0].position.y >= self.grid.length * self.grid.cell_size):
-            self.game_over()
+            # self.game_over()
+            return True
 
     def handle_events(self):
         for event in pygame.event.get():
